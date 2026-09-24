@@ -26,7 +26,11 @@ header{padding:20px 16px 8px;display:flex;justify-content:space-between}
 .challenge-line{display:flex;justify-content:space-between;color:var(--gray);font-size:12px}
 .section{font-size:13px;font-weight:900;letter-spacing:.7px;margin:23px 2px 11px}
 .habits{display:grid;gap:10px}
-.habit{background:var(--card);border:1px solid var(--border);border-radius:17px;padding:14px;display:flex;align-items:center;gap:12px;transition:.2s}
+.swipe-wrap{position:relative;overflow:hidden;border-radius:17px;background:#242424}
+.swipe-actions{position:absolute;inset:0 0 0 auto;width:150px;display:grid;grid-template-columns:1fr 1fr;z-index:0}
+.swipe-action{border:0;color:#fff;font-weight:800;font-size:12px}
+.edit-action{background:#245f9e}.delete-action{background:#b52b2b}
+.habit{position:relative;z-index:1;background:var(--card);border:1px solid var(--border);border-radius:17px;padding:14px;display:flex;align-items:center;gap:12px;transition:.2s}
 .habit.done{border-color:#713400;box-shadow:0 0 18px #ff6b0018}
 .hicon{width:46px;height:46px;border-radius:13px;background:#222;display:grid;place-items:center;font-size:22px}.hinfo{flex:1}.hname{font-weight:800}.htarget{color:var(--gray);font-size:12px;margin-top:4px}.check{width:28px;height:28px;border:2px solid #555;border-radius:50%;display:grid;place-items:center;color:transparent}.done .check{background:var(--orange);border-color:var(--orange);color:#fff}
 .addwrap{text-align:center;margin:17px}.add{width:58px;height:58px;border-radius:50%;background:var(--orange);color:#fff;font-size:30px;box-shadow:0 9px 28px #ff6b0035}.addlabel{font-size:12px;color:var(--gray);margin-top:6px}
@@ -168,12 +172,30 @@ function render(){
  if(!total){box.innerHTML='<div class="empty">No habits yet.<br>Tap + to add one.</div>'}
  state.habits.forEach(h=>{
   let done=d.done.includes(h.id);
+  let wrap=document.createElement('div');wrap.className='swipe-wrap';
+  wrap.innerHTML='<div class="swipe-actions"><button class="swipe-action edit-action">Edit</button><button class="swipe-action delete-action">Delete</button></div>';
   let el=document.createElement('div');el.className='habit '+(done?'done':'');
   el.innerHTML='<div class="hicon">'+h.icon+'</div><div class="hinfo"><div class="hname"></div><div class="htarget"></div></div><div class="check">'+(done?'✓':'')+'</div>';
   el.querySelector('.hname').textContent=h.name;el.querySelector('.htarget').textContent=h.target||'Daily';
-  el.onclick=()=>toggle(h.id);box.appendChild(el);
- });
- updateStats();renderCalendar();renderWeekly();updateGreeting();
+  let startX=0,startY=0,dx=0,moved=false;
+  el.addEventListener('touchstart',e=>{
+    startX=e.touches[0].clientX;startY=e.touches[0].clientY;dx=0;moved=false;
+    document.querySelectorAll('.habit').forEach(o=>{if(o!==el)o.style.transform='translateX(0)'});
+  },{passive:true});
+  el.addEventListener('touchmove',e=>{
+    let x=e.touches[0].clientX,y=e.touches[0].clientY;
+    dx=x-startX;let dy=y-startY;
+    if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>8){
+      moved=true;el.style.transform=`translateX(${Math.max(-150,Math.min(0,dx))}px)`;e.preventDefault();
+    }
+  },{passive:false});
+  el.addEventListener('touchend',()=>{el.style.transform=dx<-60?'translateX(-150px)':'translateX(0)'});
+  el.onclick=()=>{if(moved){moved=false;return}toggle(h.id)};
+  wrap.querySelector('.edit-action').onclick=e=>{e.stopPropagation();openHabit(h.id)};
+  wrap.querySelector('.delete-action').onclick=e=>{e.stopPropagation();deleteHabit(h.id)};
+  wrap.appendChild(el);box.appendChild(wrap);
+});
+  updateStats();renderCalendar();renderWeekly();updateGreeting();
 }
 function toggle(id){
  ensureToday();let d=state.history[today()],i=d.done.indexOf(id);
