@@ -1,263 +1,119 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#0B0B0B">
-<meta name="description" content="AK Fitness Challenge - daily habits, streaks and challenge tracking">
-<link rel="manifest" href="manifest.json">
-<title>AK Fitness Challenge</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AK Winter Arc">
+<title>AK 90 DAY — WINTER ARC</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{--bg:#0B0B0B;--card:#151515;--card2:#1d1d1d;--orange:#FF6B00;--white:#fff;--gray:#8A8A8A;--border:#292929;--green:#38d39f;--red:#ff5151}
-body{font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--white);min-height:100vh}
-button,input,select{font:inherit}button{border:0;cursor:pointer}
-.app{max-width:600px;margin:auto;min-height:100vh;padding-bottom:94px}
-header{padding:20px 16px 8px;display:flex;justify-content:space-between}
-.logo{font-size:23px;font-weight:900}.sub{color:var(--gray);font-size:13px;margin-top:5px}
-.head-actions{display:flex;gap:8px}.circle{width:40px;height:40px;border-radius:50%;background:var(--card);color:#fff}
-.page{display:none;padding:10px 16px 18px}.page.active{display:block}
-.title{font-size:27px;font-weight:900;margin:8px 0 18px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:19px;padding:17px;margin-bottom:12px}
-.hero{text-align:center;background:linear-gradient(145deg,#191919,#101010);padding:20px}
-.kicker{font-size:12px;color:var(--orange);font-weight:900;letter-spacing:1px}
-.big{font-size:42px;font-weight:900;margin:5px}.muted{color:var(--gray);font-size:12px}
-.bar{height:9px;background:#2a2a2a;border-radius:20px;overflow:hidden;margin:15px 3px 7px}.fill{height:100%;width:0;background:linear-gradient(90deg,#FF6B00,#FF9200);border-radius:20px;transition:width .45s}
-.challenge-line{display:flex;justify-content:space-between;color:var(--gray);font-size:12px}
-.section{font-size:13px;font-weight:900;letter-spacing:.7px;margin:23px 2px 11px}
-.habits{display:grid;gap:10px}
-.swipe-wrap{position:relative;overflow:hidden;border-radius:17px;background:#242424}
-.swipe-actions{position:absolute;inset:0 0 0 auto;width:150px;display:grid;grid-template-columns:1fr 1fr;z-index:0}
-.swipe-action{border:0;color:#fff;font-weight:800;font-size:12px}
-.edit-action{background:#245f9e}.delete-action{background:#b52b2b}
-.habit{position:relative;z-index:1;background:var(--card);border:1px solid var(--border);border-radius:17px;padding:14px;display:flex;align-items:center;gap:12px;transition:.2s}
-.habit.done{border-color:#713400;box-shadow:0 0 18px #ff6b0018}
-.hicon{width:46px;height:46px;border-radius:13px;background:#222;display:grid;place-items:center;font-size:22px}.hinfo{flex:1}.hname{font-weight:800}.htarget{color:var(--gray);font-size:12px;margin-top:4px}.check{width:28px;height:28px;border:2px solid #555;border-radius:50%;display:grid;place-items:center;color:transparent}.done .check{background:var(--orange);border-color:var(--orange);color:#fff}
-.addwrap{text-align:center;margin:17px}.add{width:58px;height:58px;border-radius:50%;background:var(--orange);color:#fff;font-size:30px;box-shadow:0 9px 28px #ff6b0035}.addlabel{font-size:12px;color:var(--gray);margin-top:6px}
-nav{position:fixed;z-index:50;bottom:0;left:50%;transform:translateX(-50%);width:min(600px,100%);display:grid;grid-template-columns:repeat(4,1fr);padding:8px 8px calc(8px + env(safe-area-inset-bottom));background:#121212f5;border-top:1px solid var(--border);backdrop-filter:blur(12px)}
-.nav{background:none;color:var(--gray);font-size:11px;padding:4px}.nav span{display:block;font-size:20px;margin-bottom:2px}.nav.active{color:var(--orange)}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{background:var(--card2);border-radius:15px;padding:17px}.stat b{font-size:27px}.stat small{display:block;color:var(--gray);margin-top:4px}
-.row{display:flex;justify-content:space-between;align-items:center}.btn{padding:12px 15px;border-radius:12px;font-weight:800}.primary{background:var(--orange);color:#fff}.secondary{background:#292929;color:#fff}
-.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.weekday{text-align:center;color:var(--gray);font-size:10px;padding:4px}.day{aspect-ratio:1;display:grid;place-items:center;background:#1e1e1e;border-radius:8px;font-size:12px}.day.today{outline:1px solid var(--orange)}.day.done{background:var(--orange)}
-.ring{width:180px;height:180px;border-radius:50%;margin:16px auto;display:grid;place-items:center;background:conic-gradient(var(--orange) 0deg,#2a2a2a 0deg);position:relative}.ring:after{content:"";position:absolute;inset:13px;border-radius:50%;background:#151515}.ringinner{position:relative;z-index:2;text-align:center}.ringinner b{font-size:34px}.ringinner small{display:block;color:var(--gray)}
-.modal{display:none;position:fixed;inset:0;z-index:100;background:#000b;align-items:flex-end}.modal.show{display:flex}.sheet{width:min(600px,100%);max-height:90vh;overflow:auto;background:#171717;border-radius:24px 24px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom))}
-.sheet h2{margin-bottom:17px}.field{margin:12px 0}.field label{display:block;color:var(--gray);font-size:11px;margin-bottom:6px}.input{width:100%;padding:13px;border-radius:12px;background:#242424;border:1px solid #333;color:#fff;outline:none}.icons{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.ic{height:40px;border-radius:10px;background:#242424}.ic.sel{background:var(--orange)}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px}
-.toast{position:fixed;z-index:200;bottom:90px;left:50%;transform:translate(-50%,20px);opacity:0;background:#252525;border:1px solid #3a3a3a;border-radius:50px;padding:11px 16px;font-size:13px;transition:.25s}.toast.show{opacity:1;transform:translate(-50%,0)}
-.empty{text-align:center;color:var(--gray);padding:30px}
-@media(min-width:601px){body{background:#050505}.app{background:#0B0B0B;box-shadow:0 0 60px #000}}
+:root{--bg:#0B0B0B;--card:#151515;--card2:#1b1b1b;--secondary:#222;--orange:#FF6B00;--orange2:#ff8a33;--white:#fff;--muted:#8A8A8A;--border:#242424;--green:#39d98a;--yellow:#f6c945;--red:#ff4d4d;--shadow:0 18px 45px rgba(0,0,0,.35);--r:18px;--hero:24px}*{box-sizing:border-box}html{background:var(--bg);color:var(--white);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}body{margin:0;background:radial-gradient(circle at 80% -10%,rgba(255,107,0,.13),transparent 30%),var(--bg);min-height:100vh;overflow-x:hidden}button,input,select{font:inherit}button{border:0;color:inherit;cursor:pointer}.app{width:100%;max-width:900px;margin:auto;min-height:100vh;padding-bottom:92px}.intro{position:fixed;inset:0;z-index:1000;background:#050505;display:grid;place-items:center;text-align:center;animation:introOut .8s ease 2.25s forwards}.intro-inner{animation:introIn 1s ease}.intro-kicker{font-size:13px;letter-spacing:.34em;color:var(--muted);font-weight:800;margin-bottom:14px}.intro-title{font-size:clamp(42px,13vw,72px);line-height:.92;font-weight:950;letter-spacing:-.06em}.intro-title span{color:var(--orange)}.intro-sub{margin-top:18px;color:#aaa;letter-spacing:.2em;font-size:11px;font-weight:800}.hide{display:none!important}@keyframes introIn{from{opacity:0;transform:scale(.94);filter:blur(8px)}to{opacity:1;transform:none;filter:none}}@keyframes introOut{to{opacity:0;visibility:hidden;pointer-events:none}}@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}@keyframes pulse{50%{box-shadow:0 0 0 9px rgba(255,107,0,.04),0 0 34px rgba(255,107,0,.2)}}@keyframes spin{to{transform:rotate(360deg)}}.topbar{padding:calc(18px + env(safe-area-inset-top)) 18px 10px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:30;background:linear-gradient(var(--bg) 78%,transparent);backdrop-filter:blur(12px)}.brand{font-weight:950;letter-spacing:.08em;font-size:14px}.brand b{color:var(--orange)}.icon-btn{width:42px;height:42px;border-radius:14px;background:var(--card);border:1px solid var(--border);display:grid;place-items:center;font-size:18px}.content{padding:8px 16px 0}.greeting{animation:rise .45s ease}.eyebrow{font-size:11px;color:var(--orange);font-weight:900;letter-spacing:.18em;text-transform:uppercase}.greeting h1{font-size:29px;line-height:1.05;margin:7px 0 5px;letter-spacing:-.045em}.subtitle{color:var(--muted);font-size:13px}.hero{margin-top:20px;background:linear-gradient(145deg,#1a1a1a,#111);border:1px solid #292929;border-radius:var(--hero);padding:20px;position:relative;overflow:hidden;box-shadow:var(--shadow);animation:rise .5s ease}.hero:after{content:"";position:absolute;width:190px;height:190px;border-radius:50%;background:rgba(255,107,0,.11);right:-70px;top:-85px;filter:blur(3px)}.hero-top{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1}.hero-day{font-size:31px;font-weight:950;letter-spacing:-.05em}.hero-day small{display:block;font-size:10px;letter-spacing:.18em;color:var(--muted);margin-bottom:6px}.status-pill{padding:7px 10px;border-radius:999px;background:rgba(255,107,0,.12);border:1px solid rgba(255,107,0,.3);color:var(--orange2);font-size:10px;font-weight:900;letter-spacing:.1em}.hero-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-top:20px}.stat{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.055);padding:11px;border-radius:14px}.stat strong{font-size:18px}.stat span{display:block;color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.1em;margin-top:3px}.progress{height:8px;background:#242424;border-radius:999px;overflow:hidden}.progress>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--orange),#ff9d5a);border-radius:inherit;transition:width .8s ease}.hero-progress{margin-top:17px}.progress-label{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:7px}.section-head{display:flex;align-items:end;justify-content:space-between;margin:25px 2px 12px}.section-head h2{font-size:17px;margin:0;letter-spacing:-.02em}.section-head span{font-size:10px;color:var(--muted);font-weight:700}.mission{padding:16px;background:linear-gradient(135deg,rgba(255,107,0,.11),rgba(255,255,255,.025));border:1px solid rgba(255,107,0,.18);border-radius:18px;margin-bottom:13px}.mission strong{font-size:13px}.mission p{margin:5px 0 0;color:var(--muted);font-size:11px}.task-list{display:grid;gap:11px}.task{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:15px;animation:rise .4s ease;position:relative;overflow:hidden}.task.done{border-color:rgba(57,217,138,.2)}.task-head{display:flex;gap:12px;align-items:center}.task-emoji{width:47px;height:47px;border-radius:15px;background:#202020;display:grid;place-items:center;font-size:23px;flex:none}.task-main{min-width:0;flex:1}.task-name{font-weight:850;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.task-meta{font-size:10px;color:var(--muted);margin-top:4px;display:flex;gap:7px;flex-wrap:wrap}.badge{display:inline-flex;align-items:center;padding:5px 7px;border-radius:8px;background:#222;font-size:9px;font-weight:900;letter-spacing:.04em}.badge.done{background:rgba(57,217,138,.1);color:var(--green)}.badge.late{background:rgba(246,201,69,.1);color:var(--yellow)}.badge.missed{background:rgba(255,77,77,.1);color:var(--red)}.badge.locked{background:#222;color:#aaa}.task-actions{display:flex;gap:8px;margin-top:13px}.btn{min-height:42px;padding:0 14px;border-radius:13px;background:#242424;color:#fff;font-weight:800;font-size:11px;border:1px solid #303030;transition:.15s}.btn:active{transform:scale(.97)}.btn.primary{background:var(--orange);border-color:var(--orange);color:#090909}.btn.ghost{background:transparent}.btn.danger{color:#ff6b6b}.btn:disabled{opacity:.4;cursor:not-allowed}.start-note{color:var(--muted);font-size:10px;align-self:center}.fab{position:fixed;right:max(18px,calc((100vw - 900px)/2 + 18px));bottom:82px;width:57px;height:57px;border-radius:18px;background:var(--orange);color:#080808;font-size:29px;box-shadow:0 12px 35px rgba(255,107,0,.3);z-index:25}.bottom{position:fixed;bottom:0;left:0;right:0;z-index:40;padding:9px 10px calc(9px + env(safe-area-inset-bottom));background:rgba(11,11,11,.9);border-top:1px solid var(--border);backdrop-filter:blur(18px)}.nav{max-width:600px;margin:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.nav button{background:transparent;color:#6f6f6f;min-height:48px;border-radius:14px;font-size:10px;font-weight:800}.nav button.active{background:#181818;color:var(--orange)}.nav .ni{display:block;font-size:18px;margin-bottom:2px}.page{display:none}.page.active{display:block;animation:rise .25s ease}.day-picker{display:flex;gap:8px;overflow:auto;padding:2px 0 7px;scrollbar-width:none}.day-picker::-webkit-scrollbar{display:none}.day-chip{min-width:69px;padding:9px 8px;border-radius:14px;background:var(--card);border:1px solid var(--border);text-align:left}.day-chip strong{display:block;font-size:12px}.day-chip span{font-size:9px;color:var(--muted)}.day-chip.current{border-color:var(--orange);box-shadow:inset 0 0 0 1px rgba(255,107,0,.25)}.day-chip.locked{opacity:.52}.empty{padding:28px 15px;text-align:center;background:var(--card);border:1px dashed #333;border-radius:18px;color:var(--muted);font-size:12px}.empty b{display:block;color:#fff;margin-bottom:6px}.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px}.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metric strong{font-size:26px;letter-spacing:-.05em}.metric span{display:block;color:var(--muted);font-size:10px;margin-top:3px}.bar-row{margin-top:14px}.bar-row label{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:6px}.list{display:grid;gap:8px}.list-row{display:flex;justify-content:space-between;align-items:center;background:#1b1b1b;border:1px solid #262626;border-radius:13px;padding:11px}.list-row small{color:var(--muted)}.milestones{display:grid;gap:9px}.mile{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid var(--border);background:var(--card);border-radius:16px}.mile-icon{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:#202020}.mile.unlocked{border-color:rgba(255,107,0,.35)}.mile.unlocked .mile-icon{background:rgba(255,107,0,.14);animation:pulse 2s infinite}.mile b{font-size:12px}.mile small{display:block;color:var(--muted);font-size:10px;margin-top:2px}.report-hero{background:linear-gradient(145deg,#21150d,#151515);border:1px solid rgba(255,107,0,.24);border-radius:24px;padding:24px;text-align:center;box-shadow:var(--shadow)}.report-hero .big{font-size:55px;font-weight:950;letter-spacing:-.08em;color:var(--orange);line-height:1}.report-hero h2{margin:12px 0 5px;font-size:22px}.report-hero p{margin:0;color:var(--muted);font-size:11px}.settings-list{display:grid;gap:9px}.setting{display:flex;align-items:center;justify-content:space-between;padding:14px;background:var(--card);border:1px solid var(--border);border-radius:16px}.setting span{color:var(--muted);font-size:10px}.form{display:grid;gap:13px}.field label{display:block;color:#aaa;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin:0 0 6px}.input,.select{width:100%;height:45px;border:1px solid #303030;border-radius:13px;background:#111;color:#fff;padding:0 12px;outline:none}.input:focus,.select:focus{border-color:var(--orange)}.time-row{display:grid;grid-template-columns:1fr 1fr;gap:9px}.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;display:flex;align-items:flex-end;backdrop-filter:blur(8px)}.modal{width:100%;max-width:700px;margin:auto auto 0;background:#151515;border:1px solid #2a2a2a;border-bottom:0;border-radius:24px 24px 0 0;padding:18px 17px calc(20px + env(safe-area-inset-bottom));max-height:92vh;overflow:auto;animation:slideUp .25s ease}.modal.center{margin:auto;border-radius:24px;max-height:88vh}@keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.modal-head h3{margin:0;font-size:18px}.close{width:36px;height:36px;border-radius:11px;background:#222}.timer{padding:20px 8px;text-align:center}.timer-ring{width:205px;height:205px;border-radius:50%;margin:7px auto 20px;display:grid;place-items:center;background:radial-gradient(circle at center,#151515 64%,transparent 65%),conic-gradient(var(--orange) var(--pct,0%),#2b2b2b 0);animation:pulse 2.3s infinite}.timer-time{font-size:45px;font-weight:950;letter-spacing:-.06em;font-variant-numeric:tabular-nums}.timer-task{color:var(--muted);font-size:11px;margin-top:2px}.timer-warning{margin:10px auto;padding:10px;border-radius:12px;background:rgba(255,77,77,.08);color:#ff7777;font-size:10px;max-width:320px}.toast{position:fixed;left:50%;bottom:90px;transform:translate(-50%,20px);background:#f5f5f5;color:#0b0b0b;padding:11px 14px;border-radius:12px;font-size:11px;font-weight:800;z-index:200;opacity:0;pointer-events:none;transition:.25s;max-width:90%;text-align:center}.toast.show{opacity:1;transform:translate(-50%,0)}.photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.photo{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden}.photo img{width:100%;aspect-ratio:1;object-fit:cover;display:block}.photo figcaption{padding:9px;font-size:10px;color:var(--muted)}.calendar-note{font-size:10px;color:var(--muted);margin-top:8px}.divider{height:1px;background:var(--border);margin:17px 0}.notice{font-size:10px;color:#aaa;line-height:1.5;background:#101010;border:1px solid #242424;border-radius:13px;padding:11px}.switch{width:48px;height:28px;border-radius:99px;background:#333;padding:3px}.switch i{display:block;width:22px;height:22px;border-radius:50%;background:#aaa;transition:.2s}.switch.on{background:rgba(255,107,0,.35)}.switch.on i{transform:translateX(20px);background:var(--orange)}@media(min-width:700px){.content{padding-left:24px;padding-right:24px}.bottom{left:50%;right:auto;width:min(600px,100%);transform:translateX(-50%);border:1px solid var(--border);border-bottom:0;border-radius:18px 18px 0 0}.hero{padding:24px}.modal{border-radius:24px;border:1px solid #2a2a2a;margin:auto}.fab{bottom:100px}.photo-grid{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
 <body>
-<div class="app">
-<header>
-  <div><div class="logo">AK HABIT</div><div class="sub" id="greeting">Good morning, Arun 👋</div></div>
-  <div class="head-actions"><button class="circle" onclick="notifyInfo()">🔔</button><button class="circle" onclick="go('profile')">⚙️</button></div>
-</header>
-
-<section id="home" class="page active">
-  <div class="card hero" onclick="challengeModal()">
-    <div class="kicker">🔥 <span id="streak">0</span> DAY STREAK</div>
-    <div class="big" id="percent">0%</div>
-    <div class="muted">TODAY'S PROGRESS</div>
-    <div class="bar"><div id="fill" class="fill"></div></div>
-    <div class="challenge-line"><span id="doneText">0 / 0 completed</span><span id="dayText">Day 1 / 30</span></div>
-  </div>
-  <div class="section">TODAY'S HABITS</div>
-  <div id="habits" class="habits"></div>
-  <div class="addwrap"><button class="add" onclick="openHabit()">+</button><div class="addlabel">Add New Habit</div></div>
-</section>
-
-<section id="calendarPage" class="page">
-  <div class="title">Calendar</div>
-  <div class="card">
-    <div class="row" style="margin-bottom:14px"><b id="month"></b><div><button class="secondary btn" onclick="monthMove(-1)">‹</button> <button class="secondary btn" onclick="monthMove(1)">›</button></div></div>
-    <div id="calendar" class="calendar"></div>
-  </div>
-  <div class="card"><b>Daily history</b><p class="muted" style="margin-top:7px">Tap a completed day to view its saved completion data.</p></div>
-</section>
-
-<section id="statsPage" class="page">
-  <div class="title">Your Stats</div>
-  <div class="grid2">
-    <div class="stat"><b id="sStreak">0</b><small>Current streak</small></div>
-    <div class="stat"><b id="sBest">0</b><small>Best streak</small></div>
-    <div class="stat"><b id="sToday">0%</b><small>Today</small></div>
-    <div class="stat"><b id="sTotal">0</b><small>Habits</small></div>
-  </div>
-  <div class="card" style="margin-top:12px"><b>Last 7 days</b><div id="weekly" style="margin-top:14px"></div></div>
-</section>
-
-<section id="profilePage" class="page">
-  <div class="title">Profile</div>
-  <div class="card"><div style="font-size:20px;font-weight:900">Arun</div><div class="muted">AK Fitness Challenge</div></div>
-  <div class="card">
-    <div class="row"><div><b>Notifications</b><div class="muted">Browser reminders</div></div><button id="notifBtn" class="btn primary" onclick="requestNotifications()">Enable</button></div>
-  </div>
-  <div class="card">
-    <div class="row"><div><b>Challenge</b><div class="muted" id="challengeInfo">30 days</div></div><button class="btn secondary" onclick="openChallengeSettings()">Change</button></div>
-  </div>
-  <div class="card"><button class="btn secondary" style="width:100%" onclick="resetToday()">Reset today's progress</button></div>
-</section>
-
-<nav>
-<button class="nav active" onclick="go('home',this)"><span>🏠</span>Home</button>
-<button class="nav" onclick="go('calendar',this)"><span>📅</span>Calendar</button>
-<button class="nav" onclick="go('stats',this)"><span>📊</span>Stats</button>
-<button class="nav" onclick="go('profile',this)"><span>👤</span>Me</button>
-</nav>
+<div id="intro" class="intro"><div class="intro-inner"><div class="intro-kicker">WELCOME TO</div><div class="intro-title"><span>WINTER</span> ARC</div><div class="intro-sub">DISCIPLINE STARTS NOW</div></div></div>
+<div class="app" id="app">
+<header class="topbar"><div class="brand"><b>AK</b> 90 DAY</div><button class="icon-btn" onclick="openSettings()" aria-label="Settings">⚙️</button></header>
+<main class="content">
+<section id="homePage" class="page active"></section>
+<section id="weeklyPage" class="page"></section>
+<section id="progressPage" class="page"></section>
+<section id="reportPage" class="page"></section>
+</main>
 </div>
-
-<div id="habitModal" class="modal"><div class="sheet">
-<h2 id="modalTitle">Add New Habit</h2>
-<div class="field"><label>ICON</label><div id="icons" class="icons"></div></div>
-<div class="field"><label>HABIT NAME</label><input id="hName" class="input" maxlength="35" placeholder="Running"></div>
-<div class="field"><label>TARGET</label><input id="hTarget" class="input" maxlength="40" placeholder="5 km"></div>
-<div class="field"><label>REMINDER</label><input id="hReminder" class="input" type="time"></div>
-<div class="field"><label>CHALLENGE DURATION</label><select id="hDuration" class="input"><option>7</option><option>14</option><option>21</option><option selected>30</option><option>60</option><option>90</option></select></div>
-<div class="actions"><button class="btn secondary" onclick="closeModal('habitModal')">Cancel</button><button class="btn primary" onclick="saveHabit()">Save Habit</button></div>
-</div></div>
-
-<div id="challengeModal" class="modal"><div class="sheet" style="text-align:center">
-<h2>🔥 Daily Challenge</h2><div id="ring" class="ring"><div class="ringinner"><b id="ringText">0%</b><small>COMPLETE</small></div></div>
-<div id="challengeSummary">0 / 0 habits</div><div class="muted" style="margin-top:6px">Keep going. Build the streak.</div>
-<button class="btn primary" style="width:100%;margin-top:18px" onclick="closeModal('challengeModal')">Continue</button>
-</div></div>
-
-<div id="settingsModal" class="modal"><div class="sheet">
-<h2>Challenge Settings</h2>
-<div class="field"><label>START DATE</label><input id="startDate" class="input" type="date"></div>
-<div class="field"><label>DURATION</label><select id="challengeDuration" class="input"><option value="7">7 days</option><option value="14">14 days</option><option value="21">21 days</option><option value="30">30 days</option><option value="60">60 days</option><option value="90">90 days</option></select></div>
-<div class="actions"><button class="btn secondary" onclick="closeModal('settingsModal')">Cancel</button><button class="btn primary" onclick="saveChallenge()">Save</button></div>
-</div></div>
-
-<div id="toast" class="toast"></div>
-
+<button id="fab" class="fab hide" onclick="openTaskForm()">＋</button>
+<nav class="bottom"><div class="nav"><button data-page="homePage" class="active" onclick="showPage('homePage')"><span class="ni">⌂</span>Home</button><button data-page="weeklyPage" onclick="showPage('weeklyPage')"><span class="ni">▣</span>Weekly</button><button data-page="progressPage" onclick="showPage('progressPage')"><span class="ni">◉</span>Progress</button><button data-page="reportPage" onclick="showPage('reportPage')"><span class="ni">▤</span>Report</button></div></nav>
+<div id="modalRoot"></div><div id="toast" class="toast"></div>
 <script>
-const KEY='akFitnessV2';
-const icons=['🏋️','💧','📚','🏃','😴','🧘','🥗','🚴','⚽','🏊','🔥','💪','🎯','🧠','📖','⏰','🚶','🏆','❤️','☀️','🌙'];
-const defaults=[
-{id:1,icon:'🏋️',name:'Workout',target:'45 min',reminder:'',duration:30},
-{id:2,icon:'💧',name:'Drink Water',target:'3 / 4 litres',reminder:'',duration:30},
-{id:3,icon:'📚',name:'Study',target:'2 hours',reminder:'',duration:30},
-{id:4,icon:'🏃',name:'Walking',target:'5,000 steps',reminder:'',duration:30},
-{id:5,icon:'😴',name:'Sleep',target:'8 hours',reminder:'',duration:30},
-{id:6,icon:'🧘',name:'Meditation',target:'10 min',reminder:'',duration:30}
-];
-let state=JSON.parse(localStorage.getItem(KEY)||'null')||{
-habits:defaults,history:{},streak:0,best:0,
-challenge:{start:dateKey(new Date()),duration:30}
-};
-let selectedIcon='🏋️', editId=null, cal=new Date();
+'use strict';
+const KEY='AK_WINTER_ARC_DATA';
+const DAY=86400000;
+let data=loadData();
+let selectedDayIndex=null;
+let activeTimer=null;
+let reminderTimer=null;
 
-function dateKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
-function today(){return dateKey(new Date())}
-function save(){localStorage.setItem(KEY,JSON.stringify(state))}
-function dayData(k=today()){return state.history[k]||{done:[],pct:0}}
-function ensureToday(){if(!state.history[today()])state.history[today()]={done:[],pct:0}}
-function calc(){ensureToday();let d=state.history[today()],total=state.habits.length;d.done=d.done.filter(id=>state.habits.some(h=>h.id===id));d.pct=total?Math.round(d.done.length/total*100):0;save()}
-function challengeDay(){
- let s=new Date(state.challenge.start+'T00:00:00'),t=new Date(today()+'T00:00:00');
- return Math.max(1,Math.min(state.challenge.duration,Math.floor((t-s)/86400000)+1))
-}
-function render(){
- calc();let d=dayData(),total=state.habits.length,p=d.pct;
- document.getElementById('percent').textContent=p+'%';
- document.getElementById('fill').style.width=p+'%';
- document.getElementById('doneText').textContent=d.done.length+' / '+total+' completed';
- document.getElementById('dayText').textContent='Day '+challengeDay()+' / '+state.challenge.duration;
- document.getElementById('streak').textContent=state.streak;
- document.getElementById('challengeInfo').textContent=state.challenge.duration+' days · Day '+challengeDay();
- let box=document.getElementById('habits');box.innerHTML='';
- if(!total){box.innerHTML='<div class="empty">No habits yet.<br>Tap + to add one.</div>'}
- state.habits.forEach(h=>{
-  let done=d.done.includes(h.id);
-  let wrap=document.createElement('div');wrap.className='swipe-wrap';
-  wrap.innerHTML='<div class="swipe-actions"><button class="swipe-action edit-action">Edit</button><button class="swipe-action delete-action">Delete</button></div>';
-  let el=document.createElement('div');el.className='habit '+(done?'done':'');
-  el.innerHTML='<div class="hicon">'+h.icon+'</div><div class="hinfo"><div class="hname"></div><div class="htarget"></div></div><div class="check">'+(done?'✓':'')+'</div>';
-  el.querySelector('.hname').textContent=h.name;el.querySelector('.htarget').textContent=h.target||'Daily';
-  let startX=0,startY=0,dx=0,moved=false;
-  el.addEventListener('touchstart',e=>{
-    startX=e.touches[0].clientX;startY=e.touches[0].clientY;dx=0;moved=false;
-    document.querySelectorAll('.habit').forEach(o=>{if(o!==el)o.style.transform='translateX(0)'});
-  },{passive:true});
-  el.addEventListener('touchmove',e=>{
-    let x=e.touches[0].clientX,y=e.touches[0].clientY;
-    dx=x-startX;let dy=y-startY;
-    if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>8){
-      moved=true;el.style.transform=`translateX(${Math.max(-150,Math.min(0,dx))}px)`;e.preventDefault();
-    }
-  },{passive:false});
-  el.addEventListener('touchend',()=>{el.style.transform=dx<-60?'translateX(-150px)':'translateX(0)'});
-  el.onclick=()=>{if(moved){moved=false;return}toggle(h.id)};
-  wrap.querySelector('.edit-action').onclick=e=>{e.stopPropagation();openHabit(h.id)};
-  wrap.querySelector('.delete-action').onclick=e=>{e.stopPropagation();deleteHabit(h.id)};
-  wrap.appendChild(el);box.appendChild(wrap);
-});
-  updateStats();renderCalendar();renderWeekly();updateGreeting();
-}
-function toggle(id){
- ensureToday();let d=state.history[today()],i=d.done.indexOf(id);
- if(i>=0)d.done.splice(i,1);else d.done.push(id);
- let was=d.pct===100;calc();let now=state.history[today()].pct===100;
- if(!was&&now)completeDay();
- save();render();toast(now?'🔥 Challenge day completed!':'Habit updated ✓');
-}
-function completeDay(){
- let d=new Date();let s=0;
- for(let i=0;i<10000;i++){let k=dateKey(new Date(d.getTime()-i*86400000)),x=state.history[k];if(x&&x.pct===100)s++;else break}
- state.streak=s;state.best=Math.max(state.best,s);save();
-}
-function openHabit(id=null){
- editId=id;selectedIcon='🏋️';
- if(id){let h=state.habits.find(x=>x.id===id);document.getElementById('modalTitle').textContent='Edit Habit';document.getElementById('hName').value=h.name;document.getElementById('hTarget').value=h.target;document.getElementById('hReminder').value=h.reminder||'';document.getElementById('hDuration').value=h.duration||30;selectedIcon=h.icon}
- else{document.getElementById('modalTitle').textContent='Add New Habit';document.getElementById('hName').value='';document.getElementById('hTarget').value='';document.getElementById('hReminder').value='';document.getElementById('hDuration').value=30}
- renderIcons();document.getElementById('habitModal').classList.add('show')
-}
-function renderIcons(){let box=document.getElementById('icons');box.innerHTML='';icons.forEach(x=>{let b=document.createElement('button');b.className='ic '+(x===selectedIcon?'sel':'');b.textContent=x;b.onclick=()=>{selectedIcon=x;renderIcons()};box.appendChild(b)})}
-function saveHabit(){
- let name=document.getElementById('hName').value.trim();if(!name)return toast('Enter habit name');
- let obj={icon:selectedIcon,name,target:document.getElementById('hTarget').value.trim(),reminder:document.getElementById('hReminder').value,duration:Number(document.getElementById('hDuration').value)};
- if(editId){Object.assign(state.habits.find(x=>x.id===editId),obj);toast('Habit updated ✓')}else{state.habits.push({id:Date.now(),...obj});toast('Habit added 🔥')}
- save();closeModal('habitModal');render();
-}
-function deleteHabit(id){if(!confirm('Delete this habit?'))return;state.habits=state.habits.filter(h=>h.id!==id);Object.values(state.history).forEach(x=>x.done=x.done.filter(i=>i!==id));save();render();toast('Habit deleted')}
-function challengeModal(){calc();let p=dayData().pct;document.getElementById('ringText').textContent=p+'%';document.getElementById('ring').style.background=`conic-gradient(#FF6B00 ${p*3.6}deg,#2a2a2a 0deg)`;document.getElementById('challengeSummary').textContent=dayData().done.length+' / '+state.habits.length+' habits completed';document.getElementById('challengeModal').classList.add('show')}
-function closeModal(id){document.getElementById(id).classList.remove('show')}
-function go(page,btn){
- document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
- document.getElementById(page==='home'?'home':page+'Page').classList.add('active');
- document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');
- if(page==='calendar')renderCalendar();if(page==='stats')updateStats()
-}
-function renderCalendar(){
- let y=cal.getFullYear(),m=cal.getMonth(),box=document.getElementById('calendar');box.innerHTML='';
- document.getElementById('month').textContent=cal.toLocaleDateString('en-US',{month:'long',year:'numeric'});
- ['S','M','T','W','T','F','S'].forEach(x=>{let e=document.createElement('div');e.className='weekday';e.textContent=x;box.appendChild(e)});
- let first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate();
- for(let i=0;i<first;i++)box.appendChild(document.createElement('div'));
- for(let n=1;n<=days;n++){let d=new Date(y,m,n),e=document.createElement('div');e.className='day';e.textContent=n;let k=dateKey(d);if(k===today())e.classList.add('today');if(state.history[k]?.pct===100)e.classList.add('done');e.onclick=()=>state.history[k]&&toast(k+': '+state.history[k].pct+'% completed');box.appendChild(e)}
-}
-function monthMove(n){cal.setMonth(cal.getMonth()+n);renderCalendar()}
-function updateStats(){
- let d=dayData();document.getElementById('sStreak').textContent=state.streak;document.getElementById('sBest').textContent=state.best;document.getElementById('sToday').textContent=d.pct+'%';document.getElementById('sTotal').textContent=state.habits.length
-}
-function renderWeekly(){
- let box=document.getElementById('weekly');box.innerHTML='';for(let i=6;i>=0;i--){let d=new Date(Date.now()-i*86400000),k=dateKey(d),p=state.history[k]?.pct||0;let row=document.createElement('div');row.style.cssText='display:grid;grid-template-columns:55px 1fr 38px;gap:8px;align-items:center;margin:9px 0;font-size:12px';row.innerHTML='<span>'+d.toLocaleDateString('en-US',{weekday:'short'})+'</span><div class="bar" style="margin:0"><div class="fill" style="width:'+p+'%"></div></div><span>'+p+'%</span>';box.appendChild(row)}
-}
-function openChallengeSettings(){document.getElementById('startDate').value=state.challenge.start;document.getElementById('challengeDuration').value=state.challenge.duration;document.getElementById('settingsModal').classList.add('show')}
-function saveChallenge(){state.challenge.start=document.getElementById('startDate').value||today();state.challenge.duration=Number(document.getElementById('challengeDuration').value);save();closeModal('settingsModal');render();toast('Challenge updated 🔥')}
-async function requestNotifications(){
- if(!('Notification'in window))return toast('Notifications are not supported here');
- let p=await Notification.requestPermission();document.getElementById('notifBtn').textContent=p==='granted'?'Enabled':'Enable';toast(p==='granted'?'Notifications enabled ✓':'Notification permission not granted')
-}
-function notifyInfo(){toast('Set a reminder time on a habit, then enable notifications in Profile')}
-function resetToday(){if(!confirm("Reset today's progress?"))return;state.history[today()]={done:[],pct:0};save();render();toast('Today reset')}
-function updateGreeting(){let h=new Date().getHours();document.getElementById('greeting').textContent=(h<12?'Good morning':h<17?'Good afternoon':'Good evening')+', Arun 👋'}
-let timer;function toast(s){let e=document.getElementById('toast');e.textContent=s;e.classList.add('show');clearTimeout(timer);timer=setTimeout(()=>e.classList.remove('show'),2200)}
-render();renderIcons();
-if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+function freshData(){return{profile:{name:'',startDate:'',endDate:'',photoInterval:7},challenge:{},tasks:[],days:{},photos:[],ringtone:{type:'beep',dataUrl:'',name:''},settings:{notifications:false}}}
+function loadData(){try{const raw=localStorage.getItem(KEY);if(!raw)return freshData();const d=JSON.parse(raw);return Object.assign(freshData(),d,{profile:Object.assign(freshData().profile,d.profile||{}),ringtone:Object.assign(freshData().ringtone,d.ringtone||{}),settings:Object.assign(freshData().settings,d.settings||{})})}catch(e){return freshData()}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(data));return true}catch(e){toast('Storage is full. Large audio/photos may exceed browser LocalStorage.');return false}}
+function esc(s){return String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+function pad(n){return String(n).padStart(2,'0')}
+function dateKey(d){return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}
+function parseDate(s){if(!s)return null;const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d,0,0,0,0)}
+function fmtDate(s){const d=parseDate(s);return d?d.toLocaleDateString(undefined,{day:'2-digit',month:'short',year:'numeric'}):'—'}
+function today(){const d=new Date();d.setHours(0,0,0,0);return d}
+function diffDays(a,b){return Math.round((b-a)/DAY)}
+function totalDays(){const s=parseDate(data.profile.startDate),e=parseDate(data.profile.endDate);return s&&e&&e>=s?diffDays(s,e)+1:0}
+function currentIndex(){const s=parseDate(data.profile.startDate);if(!s)return null;const n=diffDays(s,today());const total=totalDays();return n>=0&&n<total?n:null}
+function challengeStatus(){const s=parseDate(data.profile.startDate),e=parseDate(data.profile.endDate),t=today();if(!s||!e)return'not-set';if(t<s)return'upcoming';if(t>e)return'complete';return'active'}
+function weekIndex(index){return Math.floor(index/7)}
+function weekLabel(w){return `Week ${w+1}`}
+function ensureDay(index){const k=String(index);if(!data.days[k])data.days[k]={records:{},createdAt:Date.now()};return data.days[k]}
+function ensureRecord(dayIndex,taskId){const day=ensureDay(dayIndex);if(!day.records[taskId])day.records[taskId]={status:'pending',score:0,startTime:null,finishTime:null,actualDuration:0,reminderShown:false};return day.records[taskId]}
+function getTask(id){return data.tasks.find(t=>t.id===id)}
+function taskForDay(task,index){if(!task)return null;const w=weekIndex(index);return Object.assign({},task,scheduleForWeek(task,w))}
+function scheduleForWeek(task,w){let sched=task.scheduleByWeek?.[w];if(sched)return sched;let keys=Object.keys(task.scheduleByWeek||{}).map(Number).filter(n=>n<=w).sort((a,b)=>b-a);if(keys.length)return task.scheduleByWeek[keys[0]];return {start:task.defaultStart||'06:00',end:task.defaultEnd||'07:00'}}
+function weekChangeUsed(task,w){return !!task.weekChanges?.[w]}
+function setSchedule(task,w,start,end){task.scheduleByWeek=task.scheduleByWeek||{};task.weekChanges=task.weekChanges||{};task.scheduleByWeek[w]={start,end};task.weekChanges[w]=true}
+function timeToMinutes(v){const [h,m]=v.split(':').map(Number);return h*60+m}
+function nowMinutes(){const d=new Date();return d.getHours()*60+d.getMinutes()+d.getSeconds()/60}
+function time12(v){if(!v)return'—';const [h,m]=v.split(':').map(Number);const ap=h>=12?'PM':'AM';const hh=h%12||12;return `${hh}:${pad(m)} ${ap}`}
+function timeDateFor(date,hhmm){const [h,m]=hhmm.split(':').map(Number);const d=new Date(date);d.setHours(h,m,0,0);return d}
+function allowedState(schedule){const n=nowMinutes(),s=timeToMinutes(schedule.start),e=timeToMinutes(schedule.end);if(n<s)return {state:'before',label:`Starts at ${time12(schedule.start)}`};if(n>e)return {state:'after',label:'Allowed time ended'};return {state:'open',label:'Available now'}}
+function currentDayLockedMessage(index){const c=currentIndex();if(c===null)return challengeStatus()==='upcoming'?'Challenge has not started yet.':'Challenge has ended.';if(index>c)return'Future day — locked 🔒';if(index<c)return'Past day — view only 🔒';return''}
+function taskStatsForDay(index){let total=0,done=0,late=0,missed=0,score=0;data.tasks.forEach(t=>{const r=data.days[String(index)]?.records?.[t.id];if(!r||r.status==='pending')return;total++;score+=Number(r.score||0);if(r.status==='done')done++;else if(r.status==='late')late++;else if(r.status==='missed')missed++});const all=data.tasks.length;return{total,done,late,missed,score:all?Math.round(score/all):0,all,complete100:all>0&&done===all}}
+function overallStats(){let completed=0,late=0,missed=0,totalTasks=0,totalScore=0,daysWithRecords=0,perfectDays=0;const total=totalDays();for(let i=0;i<total;i++){const s=taskStatsForDay(i);if(s.total)daysWithRecords++;completed+=s.done;late+=s.late;missed+=s.missed;totalTasks+=s.all;totalScore+=s.score; if(s.all&&s.done===s.all)perfectDays++}return{completed,late,missed,totalTasks,totalScore,overallScore:total?Math.round(totalScore/total):0,challengeProgress:total?Math.round(((currentIndex()===null?(challengeStatus()==='complete'?total:0):currentIndex()+1)/total)*100):0,perfectDays}}
+function dailyStreak(){const total=totalDays();let end=currentIndex();if(end===null&&challengeStatus()==='complete')end=total-1;if(end===null)return 0;let streak=0;for(let i=end;i>=0;i--){const s=taskStatsForDay(i);if(data.tasks.length&&s.done===data.tasks.length)streak++;else break}return streak}
+function milestoneList(){const total=totalDays();const arr=[7,14,30,60].filter(n=>total>=n).map(n=>({n,unlocked:dailyStreak()>=n}));if(total>0)arr.push({n:total,final:true,unlocked:challengeStatus()==='complete'||(currentIndex()===total-1&&taskStatsForDay(total-1).done===data.tasks.length&&data.tasks.length>0)});return arr}
+function greeting(){const h=new Date().getHours();let x=h<12?'Good Morning':h<17?'Good Afternoon':h<21?'Good Evening':'Good Night';return `${x}, ${data.profile.name||'Athlete'} 👋`}
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));render();window.scrollTo({top:0,behavior:'smooth'})}
+function render(){renderHome();renderWeekly();renderProgress();renderReport();document.getElementById('fab').classList.toggle('hide',currentIndex()===null||document.querySelector('.page.active')?.id!=='homePage')}
+function renderHome(){const el=document.getElementById('homePage'),status=challengeStatus(),total=totalDays(),ci=currentIndex();if(!data.profile.startDate||!data.profile.endDate){el.innerHTML=`<div class="greeting"><div class="eyebrow">AK 90 DAY</div><h1>Welcome to Winter Arc.</h1><div class="subtitle">Discipline today. Freedom tomorrow.</div></div><div class="hero"><div class="hero-day"><small>SETUP REQUIRED</small>Start your challenge</div><p class="subtitle">Create your profile and choose your start/end dates. The app calculates the exact inclusive duration automatically.</p><button class="btn primary" style="margin-top:16px;width:100%" onclick="openSettings(true)">SET UP PROFILE</button></div>`;return}let idx=selectedDayIndex??ci;if(idx===null)idx=status==='complete'?total-1:0;idx=Math.max(0,Math.min(total-1,idx));selectedDayIndex=idx;const s=taskStatsForDay(idx),p=Math.round((idx+1)/total*100),lock=currentDayLockedMessage(idx);const isCurrent=ci===idx;const tasks=data.tasks.map(t=>({t,r:ensureRecord(idx,t.id),x:taskForDay(t,idx)}));el.innerHTML=`<div class="greeting"><div class="eyebrow">AK 90 DAY</div><h1>${esc(greeting())}</h1><div class="subtitle">Discipline today. Freedom tomorrow.</div></div>
+<div class="hero"><div class="hero-top"><div class="hero-day"><small>${isCurrent?'ACTIVE DAY':lock?'VIEW MODE':'DAY SELECTED'}</small>DAY ${idx+1} / ${total}</div><div class="status-pill">${isCurrent?'ACTIVE':lock?'LOCKED':'VIEW'}</div></div><div class="hero-progress"><div class="progress-label"><span>Challenge progress</span><b>${p}%</b></div><div class="progress"><i style="width:${p}%"></i></div></div><div class="hero-grid"><div class="stat"><strong>${s.score}%</strong><span>Today's score</span></div><div class="stat"><strong>🔥 ${dailyStreak()}</strong><span>Streak</span></div><div class="stat"><strong>${s.done}/${data.tasks.length}</strong><span>Tasks done</span></div></div></div>
+${renderDayPicker(idx,total,ci)}
+<div class="section-head"><h2>Today's Mission</h2><span>${lock?esc(lock):isCurrent?'LIVE':'HISTORY'}</span></div>
+<div class="mission"><strong>${isCurrent?'Show up. Finish what you start.':'Historical record — locked'}</strong><p>${isCurrent?'Complete every task inside its allowed window to protect your streak.':'Past/future days cannot be modified.'}</p></div>
+<div class="task-list">${tasks.length?tasks.map(({t,r,x})=>renderTask(t,r,x,idx,isCurrent,idx<ci)).join(''):`<div class="empty"><b>No tasks yet</b>${isCurrent?'Tap + to build today\'s mission.':'No task records for this day.'}</div>`}</div>`}
+function renderDayPicker(idx,total,ci){let start=Math.max(0,idx-2),end=Math.min(total-1,idx+2),html='<div class="section-head"><h2>Challenge Days</h2><span>SWIPE</span></div><div class="day-picker">';for(let i=start;i<=end;i++){const locked=ci!==null&&(i>ci);const past=ci!==null&&i<ci;html+=`<button class="day-chip ${i===idx?'current':''} ${locked?'locked':''}" onclick="selectDay(${i})"><strong>Day ${i+1}${locked?' 🔒':past?'':' •'}</strong><span>${fmtDate(dateKey(new Date(parseDate(data.profile.startDate).getTime()+i*DAY)))}</span></button>`}return html+'</div>'}
+function selectDay(i){selectedDayIndex=i;showPage('homePage')}
+function renderTask(t,r,x,index,isCurrent,isPast){const sched=scheduleForWeek(t,weekIndex(index));let status=r.status;let badge=status==='done'?'<span class="badge done">DONE · 100%</span>':status==='late'?'<span class="badge late">LATE · 70%</span>':status==='missed'?'<span class="badge missed">MISSED · 0%</span>':index>currentIndex()?'<span class="badge locked">LOCKED 🔒</span>':'<span class="badge">PENDING</span>';let note='';if(r.status==='pending'&&isCurrent){const a=allowedState(sched);note=`<span class="start-note">${esc(a.label)}</span>`}else if(!isCurrent)note=`<span class="start-note">${index<currentIndex()?'View only 🔒':'Locked 🔒'}</span>`;const canEdit=isCurrent&&r.status==='pending';const canStart=isCurrent&&r.status==='pending';return `<article class="task ${status==='done'?'done':''}"><div class="task-head"><div class="task-emoji">${esc(t.emoji||'🔥')}</div><div class="task-main"><div class="task-name">${esc(t.name)}</div><div class="task-meta"><span>${time12(sched.start)} – ${time12(sched.end)}</span><span>•</span><span>${durationText(t.duration)}</span>${t.reminder?`<span>• ⏰ ${time12(t.reminder)}</span>`:''}</div></div>${badge}</div><div class="task-actions">${canStart?`<button class="btn primary" onclick="tryStartTask('${t.id}',${index})">START TASK</button>`:''}${r.status==='pending'&&isCurrent?note:''}${canEdit?`<button class="btn ghost" onclick="openTaskForm('${t.id}')">Edit</button><button class="btn ghost danger" onclick="deleteTask('${t.id}')">Delete</button>`:''}${r.status!=='pending'?`<button class="btn ghost" onclick="showHistory('${t.id}')">History</button>`:''}</div></article>`}
+function durationText(min){min=Number(min||0);return min>=60?`${Math.floor(min/60)}h${min%60?` ${min%60}m`:''}`:`${min} min`}
+function openTaskForm(id=''){const current=currentIndex();if(current===null){toast('Only the current challenge day can be edited.');return}const task=id?getTask(id):null;if(task){const r=data.days[String(current)]?.records?.[id];if(r&&r.status!=='pending'){toast('Completed task records are locked.');return}}const sched=task?scheduleForWeek(task,weekIndex(current)):{start:'06:00',end:'07:00'};const used=task?weekChangeUsed(task,weekIndex(current)):false;openModal(`<div class="modal-head"><h3>${task?'Edit Task':'New Task'}</h3><button class="close" onclick="closeModal()">✕</button></div><form class="form" onsubmit="saveTask(event,'${id}',${current})"><div class="field"><label>Task Name</label><input class="input" id="fName" required maxlength="50" value="${esc(task?.name||'')}" placeholder="Running, Study, Workout..."></div><div class="field"><label>Emoji</label><input class="input" id="fEmoji" required maxlength="8" value="${esc(task?.emoji||'🔥')}" placeholder="🏃"></div><div class="time-row"><div class="field"><label>Allowed Start</label><input class="input" id="fStart" required type="time" value="${sched.start}"></div><div class="field"><label>Allowed End</label><input class="input" id="fEnd" required type="time" value="${sched.end}"></div></div><div class="field"><label>Duration (minutes)</label><input class="input" id="fDuration" required type="number" min="1" max="1440" value="${task?.duration||30}"></div><div class="field"><label>Reminder Time</label><input class="input" id="fReminder" type="time" value="${task?.reminder||''}"></div>${task&&used?'<div class="notice">Allowed time can be changed only once this week. This week\'s change has already been used.</div>':''}<div class="notice">A task must start during the allowed window and finish before that window ends. Completion before the full duration is not accepted.</div><button class="btn primary" type="submit">${task?'SAVE CHANGES':'ADD TASK'}</button></form>`)}
+function saveTask(e,id,index){e.preventDefault();const name=document.getElementById('fName').value.trim(),emoji=document.getElementById('fEmoji').value.trim()||'🔥',start=document.getElementById('fStart').value,end=document.getElementById('fEnd').value,duration=Number(document.getElementById('fDuration').value),reminder=document.getElementById('fReminder').value;if(timeToMinutes(end)<=timeToMinutes(start)){toast('End time must be after start time.');return}const w=weekIndex(index);if(id){const t=getTask(id);const old=scheduleForWeek(t,w);const changed=old.start!==start||old.end!==end;if(changed&&weekChangeUsed(t,w)){toast('Allowed time can be changed only once this week.');return}Object.assign(t,{name,emoji,duration,reminder});if(changed)setSchedule(t,w,start,end);if(!t.scheduleByWeek)t.scheduleByWeek={[w]:{start,end}};if(!t.scheduleByWeek[w])t.scheduleByWeek[w]={start,end};}else{const nid='t_'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);data.tasks.push({id:nid,name,emoji,duration,reminder,defaultStart:start,defaultEnd:end,scheduleByWeek:{[w]:{start,end}},weekChanges:{}})}save();closeModal();render();toast(id?'Task updated':'Task added');}
+function deleteTask(id){const idx=currentIndex();if(idx===null)return;const r=data.days[String(idx)]?.records?.[id];if(r&&r.status!=='pending'){toast('Historical/completed records cannot be deleted.');return}if(!confirm('Delete this task? Existing history will remain locked.'))return;data.tasks=data.tasks.filter(t=>t.id!==id);save();render();toast('Task deleted');}
+function tryStartTask(id,index){if(index!==currentIndex()){toast('Only the current day can be started.');return}const t=getTask(id),r=ensureRecord(index,id),sched=scheduleForWeek(t,weekIndex(index)),a=allowedState(sched);if(r.status!=='pending'){toast('This task is already recorded.');return}if(a.state==='before'){toast(`Starts at ${time12(sched.start)}`);return}if(a.state==='after'){toast('Allowed time ended');return}const now=new Date(),end=timeDateFor(now,sched.end),remaining=end-now;r.startTime=now.toISOString();save();startTimer(id,index);}
+function startTimer(id,index){const t=getTask(id),sched=scheduleForWeek(t,weekIndex(index)),r=ensureRecord(index,id);closeModal();openModal(`<div class="modal center"><div class="modal-head"><h3>ACTIVE MISSION</h3><button class="close" onclick="closeModal()">✕</button></div><div class="timer"><div id="timerRing" class="timer-ring"><div><div id="timerTime" class="timer-time">${fmtTimer(t.duration*60)}</div><div class="timer-task">${esc(t.emoji)} ${esc(t.name)}</div></div></div><div class="notice">Allowed: ${time12(sched.start)} – ${time12(sched.end)}<br>Finish becomes available only after the full ${durationText(t.duration)}.</div><div id="timerWarning" class="timer-warning hide"></div><button id="finishBtn" class="btn primary" style="width:100%;margin-top:12px" disabled onclick="finishTask('${id}',${index})">FINISH TASK</button></div></div>`);activeTimer={id,index,endAt:Date.now()+t.duration*60000,deadline:timeDateFor(new Date(),sched.end).getTime()};tickTimer()}
+function fmtTimer(sec){sec=Math.max(0,Math.ceil(sec));return `${pad(Math.floor(sec/60))}:${pad(sec%60)}`}
+function tickTimer(){if(!activeTimer)return;const left=Math.max(0,activeTimer.endAt-Date.now()),deadlineLeft=Math.max(0,activeTimer.deadline-Date.now());const t=getTask(activeTimer.id),total=t.duration*60000,el=document.getElementById('timerTime'),ring=document.getElementById('timerRing'),finish=document.getElementById('finishBtn'),warn=document.getElementById('timerWarning');if(!el){activeTimer=null;return}if(deadlineLeft<=0&&left>0){const r=ensureRecord(activeTimer.index,activeTimer.id);r.status='missed';r.score=0;save();if(warn){warn.textContent='Allowed time ended — this task is MISSED / INCOMPLETE.';warn.classList.remove('hide')}if(finish)finish.disabled=true;setTimeout(()=>{activeTimer=null;closeModal();render();toast('Task missed — allowed time expired.');},800);return}el.textContent=fmtTimer(Math.ceil(left/1000));ring.style.setProperty('--pct',`${Math.min(100,((total-left)/total)*100)}%`);if(left<=0){finish.disabled=false;finish.textContent='FINISH TASK';if(warn)warn.classList.add('hide')}else{finish.disabled=true;finish.textContent=`FINISH IN ${fmtTimer(Math.ceil(left/1000))}`}activeTimer.raf=setTimeout(tickTimer,250)}
+function finishTask(id,index){if(!activeTimer||activeTimer.id!==id)return;const t=getTask(id),sched=scheduleForWeek(t,weekIndex(index)),r=ensureRecord(index,id),now=new Date();if(Date.now()<activeTimer.endAt-100){toast('Finish is locked until the full duration is complete.');return}if(now>timeDateFor(now,sched.end)){r.status='missed';r.score=0;save();activeTimer=null;closeModal();render();toast('Allowed time expired — missed.');return}r.finishTime=now.toISOString();r.actualDuration=Math.round((new Date(r.finishTime)-new Date(r.startTime))/60000);const ideal=new Date(new Date(r.startTime).getTime()+t.duration*60000);r.status=now<=timeDateFor(now,sched.start).getTime()+t.duration*60000?'done':'done';const onTimeDeadline=timeDateFor(now,sched.start).getTime()+t.duration*60000;r.status=now.getTime()<=onTimeDeadline?'done':'late';r.score=r.status==='done'?100:70;save();playRingtone();activeTimer=null;closeModal();render();toast(r.status==='done'?'DONE · 100%':'LATE · 70%')}
+function showHistory(id){const t=getTask(id);const rows=[];for(let i=0;i<totalDays();i++){const r=data.days[String(i)]?.records?.[id];if(r&&r.status&&r.status!=='pending')rows.push({i,r})}openModal(`<div class="modal-head"><h3>${esc(t.name)} · History</h3><button class="close" onclick="closeModal()">✕</button></div>${rows.length?`<div class="list">${rows.map(({i,r})=>`<div class="list-row"><div><b>Day ${i+1}</b><small>${fmtDate(dateKey(new Date(parseDate(data.profile.startDate).getTime()+i*DAY)))}</small></div><div style="text-align:right"><b>${r.status.toUpperCase()}</b><small>${r.finishTime?new Date(r.finishTime).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'—'} · ${r.score}%</small></div></div>`).join('')}</div>`:'<div class="empty"><b>No completed history</b>This task has no recorded completion yet.</div>'}`)}
+function renderWeekly(){const el=document.getElementById('weeklyPage'),total=totalDays();if(!total){el.innerHTML=setupEmpty('Weekly Progress','Set your challenge dates in Settings.');return}let html=`<div class="eyebrow">WEEKLY</div><h1 style="font-size:29px;margin:7px 0 5px">Weekly Progress</h1><div class="subtitle">See completion quality, not just activity.</div>`;const weeks=Math.ceil(total/7);for(let w=0;w<weeks;w++){const a=w*7,b=Math.min(total-1,a+6);let sum=0,perfect=[],incomplete=[],completed=0,late=0,missed=0;for(let i=a;i<=b;i++){const s=taskStatsForDay(i);sum+=s.score;completed+=s.done;late+=s.late;missed+=s.missed;if(data.tasks.length&&s.done===data.tasks.length)perfect.push(i+1);else if(i<= (currentIndex()??-1))incomplete.push(i+1)}const pct=Math.round(sum/(b-a+1));html+=`<div class="card" style="margin-top:15px"><div class="section-head" style="margin:0 0 12px"><h2>${weekLabel(w)}</h2><span>${fmtDate(dateKey(new Date(parseDate(data.profile.startDate).getTime()+a*DAY)))} – ${fmtDate(dateKey(new Date(parseDate(data.profile.startDate).getTime()+b*DAY)))}</span></div><div class="progress-label"><span>Progress</span><b>${pct}%</b></div><div class="progress"><i style="width:${pct}%"></i></div><div class="hero-grid" style="margin-top:13px"><div class="stat"><strong>${completed}</strong><span>Completed</span></div><div class="stat"><strong>${late}</strong><span>Late</span></div><div class="stat"><strong>${missed}</strong><span>Missed</span></div></div><div class="divider"></div><div class="bar-row"><label><span>100% Completed Days</span><b>${perfect.length}</b></label><div class="list">${perfect.length?perfect.map(x=>`<div class="list-row"><b>Day ${x}</b><small>100% completed</small></div>`).join(''):'<div class="notice">No perfect days in this week yet.</div>'}</div></div><div class="bar-row"><label><span>Incomplete / Missed Days</span><b>${incomplete.length}</b></label><div class="list">${incomplete.length?incomplete.map(x=>`<div class="list-row"><b>Day ${x}</b><small>Needs attention</small></div>`).join(''):'<div class="notice">None recorded.</div>'}</div></div>`}el.innerHTML=html}
+function renderProgress(){const el=document.getElementById('progressPage'),o=overallStats();if(!totalDays()){el.innerHTML=setupEmpty('Progress','Set your challenge dates to begin tracking.');return}const streak=dailyStreak();el.innerHTML=`<div class="eyebrow">PROGRESS</div><h1 style="font-size:29px;margin:7px 0 5px">Arc Progress</h1><div class="subtitle">Your challenge, measured day by day.</div><div class="metric-grid" style="margin-top:18px"><div class="card metric"><strong>${o.challengeProgress}%</strong><span>Challenge progress</span><div class="progress" style="margin-top:11px"><i style="width:${o.challengeProgress}%"></i></div></div><div class="card metric"><strong>${o.overallScore}%</strong><span>Overall task score</span><div class="progress" style="margin-top:11px"><i style="width:${o.overallScore}%"></i></div></div></div><div class="metric-grid" style="margin-top:10px"><div class="card metric"><strong>🔥 ${streak}</strong><span>Current streak</span></div><div class="card metric"><strong>${o.completed}</strong><span>Completed tasks</span></div><div class="card metric"><strong>${o.late}</strong><span>Late tasks</span></div><div class="card metric"><strong>${o.missed}</strong><span>Missed tasks</span></div></div><div class="section-head"><h2>Milestones</h2><span>KEEP GOING</span></div><div class="milestones">${milestoneList().map(m=>`<div class="mile ${m.unlocked?'unlocked':''}"><div class="mile-icon">${m.unlocked?'🔥':'🔒'}</div><div><b>${m.final?'Final Challenge':m.n+' Day'}</b><small>${m.unlocked?'UNLOCKED':'LOCKED'}${m.final?' · '+totalDays()+' day challenge':''}</small></div></div>`).join('')}</div><div class="section-head"><h2>Progress Photos</h2><span>${data.profile.photoInterval?`EVERY ${data.profile.photoInterval} DAYS`:'OFF'}</span></div>${renderPhotos()}`}
+function renderPhotos(){return data.photos.length?`<div class="photo-grid">${data.photos.slice().reverse().map(p=>`<figure class="photo"><img src="${p.dataUrl}" alt="Progress photo Day ${p.day}"><figcaption>Day ${p.day} · ${fmtDate(p.date)}</figcaption></figure>`).join('')}</div>`:`<div class="empty"><b>No progress photos yet</b>Set an interval in Settings and add a photo when prompted.</div>`}
+function renderReport(){const el=document.getElementById('reportPage'),o=overallStats(),streak=dailyStreak(),total=totalDays();if(!total){el.innerHTML=setupEmpty('Final Report','Your report will appear after challenge setup.');return}const final=challengeStatus()==='complete';el.innerHTML=`<div class="eyebrow">REPORT</div><h1 style="font-size:29px;margin:7px 0 16px">${final?'Final Challenge Report':'Challenge Report'}</h1><div class="report-hero"><div class="big">${o.overallScore}%</div><h2>${final?'WINTER ARC COMPLETE 🏆':'WINTER ARC IN PROGRESS'}</h2><p>${fmtDate(data.profile.startDate)} → ${fmtDate(data.profile.endDate)}</p></div><div class="metric-grid" style="margin-top:12px"><div class="card metric"><strong>${total}</strong><span>Total Days</span></div><div class="card metric"><strong>🔥 ${streak}</strong><span>Current / Final Streak</span></div><div class="card metric"><strong>${o.completed}</strong><span>Completed On Time</span></div><div class="card metric"><strong>${o.late}</strong><span>Completed Late</span></div><div class="card metric"><strong>${o.missed}</strong><span>Missed</span></div><div class="card metric"><strong>${data.tasks.length}</strong><span>Task Types</span></div><div class="card metric"><strong>${o.totalTasks}</strong><span>Task Records</span></div><div class="card metric"><strong>${o.overallScore}%</strong><span>Total Score</span></div></div><div class="section-head"><h2>Challenge Dates</h2></div><div class="card"><div class="list"><div class="list-row"><b>Start</b><small>${fmtDate(data.profile.startDate)}</small></div><div class="list-row"><b>End</b><small>${fmtDate(data.profile.endDate)}</small></div><div class="list-row"><b>Duration</b><small>${total} days</small></div></div></div>`}
+function setupEmpty(title,text){return `<div class="eyebrow">AK 90 DAY</div><h1 style="font-size:29px;margin:7px 0 5px">${title}</h1><div class="subtitle">${text}</div><div class="empty" style="margin-top:18px"><b>Ready when you are.</b>Open Settings to configure your Winter Arc.</div>`}
+function openSettings(force=false){const p=data.profile;openModal(`<div class="modal"><div class="modal-head"><h3>Profile & Settings</h3><button class="close" onclick="closeModal()">✕</button></div><form class="form" onsubmit="saveSettings(event)"><div class="field"><label>Profile Name</label><input class="input" id="sName" maxlength="40" required value="${esc(p.name)}" placeholder="Your name"></div><div class="time-row"><div class="field"><label>Start Date</label><input class="input" id="sStart" type="date" required value="${p.startDate}"></div><div class="field"><label>End Date</label><input class="input" id="sEnd" type="date" required value="${p.endDate}"></div></div><div id="datePreview" class="notice">Choose dates to see inclusive challenge length.</div><div class="field"><label>Progress Photo Every N Days (0 = OFF)</label><input class="input" id="sPhoto" type="number" min="0" max="365" value="${Number(p.photoInterval||0)}"></div><div class="divider"></div><div class="field"><label>Ringtone</label><select class="select" id="sRing"><option value="beep" ${data.ringtone.type==='beep'?'selected':''}>Built-in Beep</option><option value="bell" ${data.ringtone.type==='bell'?'selected':''}>Built-in Bell</option><option value="custom" ${data.ringtone.type==='custom'?'selected':''}>Custom Audio</option></select></div><div class="field"><label>Custom Audio File</label><input class="input" id="sAudio" type="file" accept="audio/*"><div class="calendar-note">${data.ringtone.name?`Current: ${esc(data.ringtone.name)}`:'No custom audio selected.'} Large audio files can exceed LocalStorage limits.</div></div><button type="button" class="btn" onclick="testRingtone()">TEST RINGTONE</button><button type="button" class="btn" onclick="requestNotifications()">${data.settings.notifications?'NOTIFICATIONS ENABLED':'ENABLE NOTIFICATIONS'}</button><button class="btn primary" type="submit">SAVE SETTINGS</button></form><div class="divider"></div><div class="settings-list"><button class="setting" onclick="openPhotoUploader()"><b>Add Progress Photo</b><span>📸</span></button><button class="setting" onclick="confirmReset()"><b>Reset Challenge</b><span style="color:#ff7777">Reset</span></button><button class="setting" onclick="confirmClear()"><b>Clear Local Data</b><span style="color:#ff7777">Delete</span></button></div><div class="divider"></div><div class="notice">This is a single-file, offline-first app. Data stays in this browser's LocalStorage. Browser background notifications cannot be guaranteed without a service worker; this app uses in-app checks while open and the Notifications API when supported.</div></div>`);['sStart','sEnd'].forEach(id=>document.getElementById(id).addEventListener('input',updateDatePreview));updateDatePreview();if(force){} }
+function updateDatePreview(){const s=document.getElementById('sStart')?.value,e=document.getElementById('sEnd')?.value,box=document.getElementById('datePreview');if(!box)return;const a=parseDate(s),b=parseDate(e);if(a&&b&&b>=a)box.textContent=`${diffDays(a,b)+1} DAYS · ${fmtDate(s)} → ${fmtDate(e)} (inclusive)`;else box.textContent='End date must be on or after start date.'}
+function saveSettings(e){e.preventDefault();const name=document.getElementById('sName').value.trim(),start=document.getElementById('sStart').value,end=document.getElementById('sEnd').value,photo=Math.max(0,Number(document.getElementById('sPhoto').value||0)),ring=document.getElementById('sRing').value;if(!name){toast('Enter a profile name.');return}const a=parseDate(start),b=parseDate(end);if(!a||!b||b<a){toast('Choose valid challenge dates.');return}const oldStart=data.profile.startDate,oldEnd=data.profile.endDate;data.profile={name,startDate:start,endDate:end,photoInterval:photo};data.challenge={totalDays:diffDays(a,b)+1};if(ring!=='custom'){data.ringtone.type=ring}const file=document.getElementById('sAudio').files[0];if(file){if(file.size>3.5*1024*1024&&!confirm('This audio file is large and may exceed LocalStorage limits. Continue?'))return;const reader=new FileReader();reader.onload=()=>{data.ringtone={type:'custom',dataUrl:reader.result,name:file.name};save();afterSettings(oldStart,oldEnd)};reader.onerror=()=>toast('Could not read audio file.');reader.readAsDataURL(file);return}save();afterSettings(oldStart,oldEnd)}
+function afterSettings(oldStart,oldEnd){closeModal();selectedDayIndex=currentIndex();render();toast(oldStart&&oldEnd&&oldStart!==data.profile.startDate||oldEnd!==data.profile.endDate?'Challenge dates updated.':'Settings saved.');checkPhotoPrompt()}
+function openPhotoUploader(){openModal(`<div class="modal center"><div class="modal-head"><h3>Progress Photo 📸</h3><button class="close" onclick="closeModal()">✕</button></div><div class="form"><div class="field"><label>Photo</label><input class="input" id="photoFile" type="file" accept="image/*"></div><div class="notice">The image is compressed and stored locally. Nothing is uploaded to a server.</div><button class="btn primary" onclick="savePhoto()">SAVE PHOTO</button></div></div>`)}
+function savePhoto(){const f=document.getElementById('photoFile')?.files[0],idx=currentIndex();if(!f||idx===null){toast('Choose an image while the challenge is active.');return}const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas'),max=900,scale=Math.min(1,max/Math.max(img.width,img.height));c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);c.getContext('2d').drawImage(img,0,0,c.width,c.height);const dataUrl=c.toDataURL('image/jpeg',.78);data.photos=data.photos||[];data.photos.push({id:'p_'+Date.now(),day:idx+1,date:dateKey(today()),dataUrl});if(!save()){data.photos.pop();return}closeModal();render();toast('Progress photo saved locally 📸')};img.src=reader.result};reader.readAsDataURL(f)}
+function checkPhotoPrompt(){const n=Number(data.profile.photoInterval||0),idx=currentIndex();if(!n||idx===null||idx===0)return;const day=idx+1;if(day%n===0&&!data.photos.some(p=>p.day===day)){setTimeout(()=>{if(confirm(`Time for your progress photo 📸\\nDay ${day}`))openPhotoUploader()},400)}}
+function requestNotifications(){if(!('Notification'in window)){toast('Notifications are not supported by this browser.');return}Notification.requestPermission().then(p=>{data.settings.notifications=p==='granted';save();toast(p==='granted'?'Notifications enabled':'Notification permission not granted')})}
+function reminderCheck(){const idx=currentIndex();if(idx===null)return;const now=new Date();const mm=now.getHours()*60+now.getMinutes();data.tasks.forEach(t=>{if(!t.reminder)return;const r=ensureRecord(idx,t.id);const rm=timeToMinutes(t.reminder);if(mm===rm&&!r.reminderShown){r.reminderShown=true;save();playRingtone();const msg=`${t.emoji||'🔥'} ${t.name} reminder`;toast(msg);if(data.settings.notifications&&'Notification'in window&&Notification.permission==='granted')new Notification('AK Winter Arc',{body:msg})}})}
+function playRingtone(){try{if(data.ringtone.type==='custom'&&data.ringtone.dataUrl){const a=new Audio(data.ringtone.dataUrl);a.volume=.65;a.play().catch(()=>{});return}const ctx=new (window.AudioContext||window.webkitAudioContext)();const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type=data.ringtone.type==='bell'?'sine':'square';osc.frequency.value=data.ringtone.type==='bell'?880:660;gain.gain.setValueAtTime(.001,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(.18,ctx.currentTime+.02);gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.45);osc.connect(gain);gain.connect(ctx.destination);osc.start();osc.stop(ctx.currentTime+.5)}catch(e){}}
+function testRingtone(){playRingtone();toast('Ringtone tested')}
+function openModal(html){document.getElementById('modalRoot').innerHTML=`<div class="modal-backdrop" onclick="if(event.target===this)closeModal()">${html}</div>`}
+function closeModal(){if(activeTimer){clearTimeout(activeTimer.raf);activeTimer=null}document.getElementById('modalRoot').innerHTML=''}
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>el.classList.remove('show'),2500)}
+function confirmReset(){if(!confirm('Reset this challenge? Historical records, tasks, and photos will be removed. This cannot be undone.'))return;const name=data.profile.name;data=freshData();data.profile.name=name;save();closeModal();selectedDayIndex=null;render();toast('Challenge reset')}
+function confirmClear(){if(!confirm('Clear ALL Winter Arc LocalStorage data? This cannot be undone.'))return;localStorage.removeItem(KEY);data=freshData();selectedDayIndex=null;closeModal();render();toast('Local data cleared')}
+function boot(){render();setInterval(()=>{reminderCheck();if(currentIndex()!==selectedDayIndex&&document.querySelector('.page.active')?.id==='homePage'){selectedDayIndex=currentIndex();render()}},1000);setTimeout(checkPhotoPrompt,2800)}
+window.addEventListener('beforeunload',()=>{if(activeTimer){clearTimeout(activeTimer.raf)}});
+boot();
 </script>
 </body>
 </html>
